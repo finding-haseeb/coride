@@ -1,0 +1,73 @@
+type LoginFormProps = {
+  email: string;
+  password: string;
+  isSubmitting: boolean;
+  onEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onPasswordChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: () => void;
+  onSignUpClick: () => void;
+};
+
+export default function LoginForm({
+  email,
+  password,
+  isSubmitting,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+  onSignUpClick,
+}: LoginFormProps) {
+  return (
+    <div className="w-3/4 flex flex-col items-center justify-center p-8 bg-background text-foreground">
+      <div className="mb-8 text-center">
+        <h2 className="text-3xl font-semibold tracking-tight">Welcome back</h2>
+        <p className="mt-2 text-sm text-foreground/55">Sign in to find your co-riders</p>
+      </div>
+
+      <form 
+        onSubmit={(e) => { e.preventDefault(); onSubmit(); }}
+        className="w-full max-w-lg space-y-4 font-body-sm"
+      >
+        <input
+          type="email"
+          name="email"
+          placeholder="Email address"
+          value={email}
+          onChange={onEmailChange}
+          className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 text-foreground placeholder-foreground/40 transition-all"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={password}
+          onChange={onPasswordChange}
+          className="w-full h-12 px-4 bg-background border border-border rounded-xl text-[15px] focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 text-foreground placeholder-foreground/40 transition-all"
+        />
+
+        {/* LOGIN Button */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-12 mt-6 bg-primary text-primary-foreground font-button rounded-xl shadow-lg shadow-primary/25 hover:brightness-110 transition-opacity flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (
+            <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            "Sign in"
+          )}
+        </button>
+
+        <p className="text-center font-body-sm mt-6 text-foreground/70">
+          Don't have an account?{" "}
+          <span
+            className="text-primary font-bold cursor-pointer hover:underline transition-colors"
+            onClick={onSignUpClick}
+          >
+            Create one
+          </span>
+        </p>
+      </form>
+    </div>
+  );
+}

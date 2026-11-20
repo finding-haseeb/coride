@@ -1,0 +1,564 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../../store/useAuthStore";
+import { BrandLogo } from "../../components/BrandLogo";
+import {
+  ArrowRight, Shield, Users, MapPin, Globe, Lock, Activity,
+  Menu, X, Zap, Star
+} from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import {
+  ProblemCard,
+  FeatureCard,
+  StatItem,
+  StepCard,
+  TestimonialCard
+} from "./components";
+export default function LandingPage() {
+  const [scrollYState, setScrollYState] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated, checkAuth, logout } = useAuthStore();
+  
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 1000], [0, 250]);
+  const opacityHero = useTransform(scrollY, [0, 500], [1, 0]);
+
+
+
+  useEffect(() => {
+    setHasMounted(true);
+    checkAuth();
+    const handleScroll = () => setScrollYState(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [checkAuth]);
+
+
+
+  const handleLogout = () => {
+    logout();
+    window.location.reload();
+  };
+
+  const easeOutExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easeOutExpo } }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  return (
+    <div className={`min-h-screen bg-background text-foreground font-sans transition-all duration-700 overflow-hidden relative ${hasMounted ? "opacity-100" : "opacity-0"}`}>
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-block-lilac/10 dark:bg-block-lilac/5 blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute top-[40%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-block-lime/10 dark:bg-block-lime/5 blur-[100px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
+        <div className="absolute bottom-[-10%] left-[20%] w-[30vw] h-[30vw] rounded-full bg-blue-500/5 dark:bg-blue-500/5 blur-[80px] animate-pulse" style={{ animationDuration: '12s', animationDelay: '4s' }} />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMTI4LDEyOCwxMjgsMC4xKSIvPjwvc3ZnPg==')] opacity-50 dark:opacity-20" />
+      </div>
+
+      {/* Navigation */}
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-500 bg-background/70 backdrop-blur-xl border-b ${scrollYState > 20 || isMobileMenuOpen ? "border-border/50 py-3 shadow-sm" : "border-border/10 py-5"}`}>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 group">
+            <motion.div
+              whileHover={{ rotate: -8, scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            >
+              <BrandLogo size={40} showName={false} />
+            </motion.div>
+            <span className="text-2xl font-semibold tracking-tight">Co<span className="text-primary">Ride</span></span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-18 font-button text-sm font-medium">
+            {isAuthenticated ? (
+              <>
+                <Link to="/map" className="hover:text-primary transition-colors relative group">
+                  Map
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </Link>
+                <Link to="/chat" className="hover:text-primary transition-colors relative group">
+                  Chat
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </Link>
+                <Link to="/profile" className="hover:text-primary transition-colors relative group">
+                  Profile
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </Link>
+              </>
+            ) : (
+              <>
+                <a href="#how-it-works" className="hover:text-primary transition-colors relative group">
+                  How it Works
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </a>
+                <a href="#features" className="hover:text-primary transition-colors relative group">
+                  Features
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </a>
+                <a href="#testimonials" className="hover:text-primary transition-colors relative group">
+                  Testimonials
+                  <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full" />
+                </a>
+              </>
+            )}
+          </div>
+
+          <div className="hidden md:flex items-center gap-4 font-button text-sm">
+            {isAuthenticated ? (
+              <>
+                <button onClick={handleLogout} className="text-foreground/70 hover:text-red-500 transition-colors font-medium">Log Out</button>
+                <Link to="/profile">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all font-semibold">
+                    My Profile
+                  </motion.div>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/auth" className="text-foreground/70 hover:text-primary transition-colors font-medium">Log In</Link>
+                <Link to="/auth">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full hover:shadow-lg hover:shadow-primary/20 transition-all font-semibold flex items-center gap-2">
+                    Get Started <ArrowRight size={16} />
+                  </motion.div>
+                </Link>
+              </>
+            )}
+          </div>
+
+          <div className="md:hidden flex items-center gap-3">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-foreground">
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden absolute w-full top-full left-0 shadow-2xl"
+            >
+              <div className="flex flex-col px-6 py-8 gap-6 font-button text-lg">
+                {isAuthenticated ? (
+                  <>
+                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/map" className="hover:text-primary">Map</Link>
+                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/chat" className="hover:text-primary">Chat</Link>
+                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/profile" className="hover:text-primary">Profile</Link>
+                    <button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} className="text-left text-red-500">Log Out</button>
+                  </>
+                ) : (
+                  <>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#how-it-works" className="hover:text-primary">How it Works</a>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#features" className="hover:text-primary">Features</a>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#testimonials" className="hover:text-primary">Testimonials</a>
+                    <a onClick={() => setIsMobileMenuOpen(false)} href="#safety" className="hover:text-primary">Safety</a>
+                    <div className="h-px w-full bg-border/50 my-2" />
+                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/auth" className="text-center px-6 py-4 border border-border/50 rounded-2xl hover:bg-card transition-colors">Log In</Link>
+                    <Link onClick={() => setIsMobileMenuOpen(false)} to="/auth" className="text-center px-6 py-4 bg-primary text-primary-foreground rounded-2xl shadow-lg transition-transform active:scale-95">Get Started</Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-[120px] pb-[80px] px-6 z-10 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 min-h-screen">
+        <motion.div 
+          style={{ y: heroY, opacity: opacityHero }}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="flex-1 flex flex-col space-y-8"
+        >
+      
+          
+          <motion.h1 variants={fadeInUp} className="font-display-xl leading-[1.1] text-5xl md:text-6xl lg:text-[84px] tracking-tighter">
+            Turn your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">commute</span> into connections.
+          </motion.h1>
+
+          <motion.p variants={fadeInUp} className="font-subhead text-foreground/70 max-w-xl text-lg md:text-2xl font-light leading-relaxed">
+            CoRide instantly matches you with verified professionals and students on your exact route. Stop travelling alone.
+          </motion.p>
+
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-start gap-5 pt-6 w-full">
+            <Link to={isAuthenticated ? "/map" : "/auth"} className="w-full sm:w-auto">
+              <motion.div 
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-4 bg-indigo-600 text-white rounded-full hover:shadow-[0_8px_30px_rgba(99,102,241,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-3 text-lg font-semibold w-full"
+              >
+                Find Your Match
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                >
+                  <ArrowRight size={20} />
+                </motion.div>
+              </motion.div>
+            </Link>
+            <a href="#how-it-works" className="w-full sm:w-auto">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="px-8 py-4 bg-white/50 backdrop-blur-xl text-slate-700 border border-slate-200/50 hover:bg-white/80 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-full hover:bg-card transition-all w-full text-center flex items-center justify-center gap-2 text-lg font-medium shadow-sm"
+              >
+                See How It Works
+              </motion.div>
+            </a>
+          </motion.div>
+          
+          <motion.div variants={fadeInUp} className="pt-10 flex flex-wrap items-center gap-5 text-foreground/70 font-body-sm">
+            <div className="flex -space-x-4">
+              {[1, 2, 3, 4].map((i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + (i * 0.1) }}
+                  className={`w-12 h-12 rounded-full border-2 border-background flex items-center justify-center text-xs font-bold shadow-md relative`}
+                  style={{ zIndex: 10 - i, backgroundColor: `hsl(${i * 60 + 180}, 70%, 80%)`, color: `hsl(${i * 60 + 180}, 80%, 20%)` }}
+                >
+                  {['SJ', 'MR', 'DL', 'AK'][i-1]}
+                </motion.div>
+              ))}
+              <div className="w-12 h-12 rounded-full border-2 border-background bg-card flex items-center justify-center text-xs font-bold shadow-md z-0">
+                +2k
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex gap-1 text-yellow-500 mb-1">
+                {[1, 2, 3, 4, 5].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
+              </div>
+              <p className="font-medium text-sm">Trusted by 15,000+ daily</p>
+            </div>
+          </motion.div>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ duration: 1, ease: easeOutExpo, delay: 0.2 }}
+          className="flex-1 w-full relative perspective-[1000px]"
+        >
+          
+
+
+          <div className="relative rounded-[2rem] overflow-hidden shadow-2xl border border-border/30 group">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.8, ease: easeOutExpo }}
+            >
+              <img 
+                src="/images/hero_commute.jpg" 
+                alt="Two professionals chatting and smiling on a metro train" 
+                className="w-full h-auto object-cover aspect-[4/3] md:aspect-square lg:aspect-[4/3]"
+                fetchPriority="high"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Stats Section with Scroll Animation */}
+      <section className="px-6 mb-[140px] relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          className="max-w-7xl mx-auto bg-gradient-to-br from-block-lilac to-[#d5c4f7] border border-white/20 text-black rounded-[40px] p-[40px] md:p-[64px] shadow-2xl relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8 divide-x-0 md:divide-x divide-black/10 relative z-10">
+            <StatItem value="15k+" label="Daily Commuters" delay={0.1} />
+            <StatItem value="98%" label="Satisfaction" delay={0.2} />
+            <StatItem value="260+" label="Metro Stations" delay={0.3} />
+            <StatItem value="24/7" label="Safe Support" delay={0.4} />
+          </div>
+        </motion.div>
+      </section>
+      
+      {/* Problem / Solution Section */}
+      <section className="py-[120px] px-6 max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-20">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display-lg mb-6 leading-tight"
+          >
+            Commuting shouldn't be lonely.
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="font-body-lg text-foreground/60 max-w-3xl mx-auto text-xl leading-relaxed"
+          >
+            The average urban professional spends over 200 hours a year commuting. That's time often wasted in isolation.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="space-y-8"
+          >
+            <ProblemCard title="Missed Opportunities" desc="Networking and connection opportunities pass by every single day on your route." />
+            <ProblemCard title="Safety Concerns" desc="Feeling unsafe traveling alone during late hours or through unfamiliar areas." />
+            <ProblemCard title="Wasted Potential" desc="Boredom and unproductive scrolling instead of meaningful conversations." />
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 50, rotate: 2 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: easeOutExpo }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-block-lime to-block-lilac blur-3xl opacity-20 dark:opacity-10 rounded-full" />
+            <div className="glass-panel p-8 md:p-12 rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] relative z-10">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8">
+                <Zap className="text-primary w-8 h-8" />
+              </div>
+              <h3 className="font-display-lg text-4xl mb-6">The CoRide Solution</h3>
+              <p className="font-body text-foreground/70 mb-12 text-lg leading-relaxed">We turn your predictable route into a matching algorithm. Sit next to potential friends, co-founders, or mentors.</p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 md:p-8 bg-slate-50/80 rounded-3xl border border-slate-200/50 shadow-inner relative overflow-hidden">
+                <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="w-20 h-20 bg-primary text-primary-foreground rounded-2xl flex flex-col items-center justify-center font-bold shadow-lg z-10">
+                  <span className="text-xl">You</span>
+                </motion.div>
+                
+                <div className="flex-1 w-full h-2 relative flex items-center justify-center z-0 my-4 sm:my-0">
+                  <div className="absolute inset-0 bg-border overflow-hidden rounded-full">
+                    <motion.div 
+                      className="h-full bg-primary" 
+                      initial={{ width: "0%" }}
+                      whileInView={{ width: "100%" }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.5, ease: "easeInOut" }}
+                    />
+                  </div>
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1 }}
+                    className="absolute bg-background border border-primary text-primary px-4 py-1.5 rounded-full text-xs font-bold tracking-widest z-10 shadow-lg"
+                  >
+                    MATCH
+                  </motion.div>
+                </div>
+
+                <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ repeat: Infinity, duration: 2, delay: 1 }} className="w-20 h-20 bg-block-lime text-black rounded-2xl flex flex-col items-center justify-center font-bold shadow-lg z-10">
+                  <span className="text-xl">Them</span>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-[120px] px-6 relative z-10 w-full max-w-7xl mx-auto border-t border-border/50">
+        <div className="text-center mb-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-display-lg text-foreground mb-6">How It Works</h2>
+            <p className="font-subhead text-foreground/60 max-w-2xl mx-auto">
+              Three simple steps to revolutionize your daily travel experience.
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          <StepCard
+            number="01"
+            title="Set Your Route"
+            description="Enter your start and end points via our interactive map or station list."
+            color="bg-primary/10 text-primary border-primary/20"
+          />
+          <StepCard
+            number="02"
+            title="Get Matched"
+            description="Our AI finds the most compatible travel partners based on timing and profile."
+            color="bg-primary/10 text-primary border-primary/20"
+          />
+          <StepCard
+            number="03"
+            title="Travel Together"
+            description="Coordinate via secure chat and meet at the station for a better journey."
+            color="bg-primary/10 text-primary border-primary/20"
+          />
+        </motion.div>
+      </section>
+
+      {/* Features Block */}
+      <section id="features" className="px-6 mb-[140px] relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          className="max-w-7xl mx-auto bg-white/60 backdrop-blur-3xl border border-white/50 rounded-[40px] p-[40px] md:p-[80px] shadow-[0_8px_40px_rgba(0,0,0,0.04)] relative overflow-hidden"
+        >
+          {/* Decorative background element */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-block-lime/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+
+          <div className="mb-20 max-w-2xl relative z-10">
+            <h2 className="font-display-lg text-foreground mb-6">Why Choose CoRide?</h2>
+            <p className="font-subhead text-foreground/60 text-xl leading-relaxed">Built for safety, designed for connection.</p>
+          </div>
+
+          <motion.div variants={staggerContainer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
+            <FeatureCard icon={<Activity />} title="Instant Matching" description="Our algorithms find you the perfect travel companion in seconds." />
+            <FeatureCard icon={<Shield />} title="Verified Profiles" description="Every profile is authenticated using a verified university or corporate email." />
+            <FeatureCard icon={<MapPin />} title="Live Tracking" description="Real-time location sharing ensures you never miss a meeting." />
+            <FeatureCard icon={<Users />} title="Community" description="Join a network of commuters turning travel into meaningful connections." />
+            <FeatureCard icon={<Lock />} title="Private & Secure" description="Your data is encrypted end-to-end. We prioritize your privacy." />
+            <FeatureCard icon={<Globe />} title="City Wide" description="Wherever the metro goes, CoRide goes. Covering all major lines." />
+          </motion.div>
+          <div className="mt-16 text-center text-foreground/60 text-lg">
+            <p>Don't just commute. Connect, network, and grow with thousands of professionals every day.</p>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-[120px] px-6 max-w-7xl mx-auto border-t border-border/50 relative z-10">
+        <div className="text-center mb-20">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display-lg text-foreground mb-4"
+          >
+            What Users Say
+          </motion.h2>
+        </div>
+
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          <TestimonialCard quote="I used to hate my hour-long commute. Now I actually look forward to it. Met amazing people!" author="Sarah J." role="Software Engineer" color="bg-blue-500/20" />
+          <TestimonialCard quote="Safety was my biggest concern. The verification process on CoRide gave me total peace of mind." author="Michael R." role="Student" color="bg-green-500/20" />
+          <TestimonialCard quote="Found a co-founder for my startup on a train ride. This app is a networking goldmine." author="David L." role="Entrepreneur" color="bg-purple-500/20" />
+        </motion.div>
+      </section>
+
+
+      {/* CTA Section */}
+      <section className="px-6 mb-[120px] relative z-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          className="max-w-7xl mx-auto bg-slate-900 text-white rounded-[40px] p-[60px] md:p-[100px] text-center flex flex-col items-center relative overflow-hidden shadow-[0_30px_80px_rgba(15,23,42,0.3)] border border-slate-800"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground to-primary/20 dark:from-card dark:via-card dark:to-primary/10" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-primary rounded-full blur-[120px] opacity-20 dark:opacity-30" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-block-lime rounded-full blur-[120px] opacity-10 dark:opacity-20" />
+          
+          <div className="relative z-10 flex flex-col items-center w-full">
+            <h2 className="font-display-xl mb-8 text-5xl md:text-7xl">Ready to ride?</h2>
+            <p className="font-subhead text-background/80 dark:text-foreground/80 max-w-2xl mb-12 text-xl md:text-2xl leading-relaxed">
+              Join thousands of others who matched today. Safe, fast, and completely free.
+            </p>
+            <Link to={isAuthenticated ? "/map" : "/auth"}>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-12 py-5 bg-background dark:bg-primary text-foreground dark:text-primary-foreground font-button text-xl font-bold rounded-full hover:shadow-2xl hover:shadow-background/30 dark:hover:shadow-primary/30 transition-all flex items-center gap-3"
+              >
+                {isAuthenticated ? "Let's Ride" : "Create Free Account"}
+                <ArrowRight size={24} />
+              </motion.div>
+            </Link>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-background py-20 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+          <div className="md:col-span-5">
+            <div className="flex items-center gap-3 mb-8 group">
+              <BrandLogo size={40} />
+            </div>
+            <p className="text-foreground/60 text-lg max-w-sm leading-relaxed">
+              Making urban travel social, safe, and productive. One match at a time.
+            </p>
+          </div>
+
+          <div className="md:col-span-2 md:col-start-7">
+            <h4 className="font-bold mb-6 font-eyebrow text-foreground">Product</h4>
+            <ul className="space-y-4 text-foreground/60 font-medium">
+              <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Safety</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Mobile App</a></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h4 className="font-bold mb-6 font-eyebrow text-foreground">Company</h4>
+            <ul className="space-y-4 text-foreground/60 font-medium">
+              <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h4 className="font-bold mb-6 font-eyebrow text-foreground">Legal</h4>
+            <ul className="space-y-4 text-foreground/60 font-medium">
+              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-xs text-foreground/40 uppercase tracking-widest">
+          <p>© {new Date().getFullYear()} CoRide All rights reserved.</p>
+          <div className="flex gap-4">
+            <span>Designed in the real world</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

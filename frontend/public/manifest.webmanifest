@@ -1,0 +1,14 @@
+{
+  "name": "CoRide – Ride the metro together",
+  "short_name": "CoRide",
+  "description": "Find people riding the same Delhi Metro route at the same time.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
+  "icons": [
+    { "src": "/coride-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/coride-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

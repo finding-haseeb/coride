@@ -1,0 +1,9 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "backend", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "backend", "run", "dev"], "port": 3000 },
+    { "name": "chat-worker", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "chat-worker", "run", "dev"], "port": 4002 },
+    { "name": "chat-gateway", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "chat-gateway", "run", "dev"], "port": 4001 },
+    { "name": "frontend", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "frontend", "run", "dev"], "port": 8000 }
+  ]
+}
